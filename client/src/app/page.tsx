@@ -1,113 +1,185 @@
+"use client";
+
+import { MouseEvent, useState, useRef, useEffect, FormEvent } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Montserrat } from "next/font/google";
 import Image from "next/image";
+import dropdown_svg from "@/assets/dropdown_arrow.svg";
+import endPoints from "@/utils/endPoints";
+import CalcRequest from "@/utils/types";
+import getResult from "@/utils/fetch";
+const montserrat = Montserrat({ weight: "700", subsets: ["latin"] });
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const [isShown, setIsShown] = useState(false);
+	const [method, setMethod] = useState(0);
+	const dropdown_menu = useRef<any>(null);
+	const base_menu = useRef<any>(null);
+	const object: Partial<CalcRequest> = {};
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	const { data, isError, isLoading, refetch, isFetched } = useQuery({
+		queryKey: ["result"],
+		queryFn: () => getResult(object as CalcRequest, endPoints[method].api),
+		enabled: false,
+		refetchOnWindowFocus: false,
+	});
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+	const onClick = (e: MouseEvent<HTMLAnchorElement>) => {
+		e.preventDefault();
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+		setIsShown((prev) => !prev);
+	};
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+		const formData = new FormData(e.currentTarget);
+
+		formData.forEach(function (value, key) {
+			object[key as keyof CalcRequest] = Number(value);
+		});
+
+		refetch();
+	};
+
+	useEffect(() => {
+		/**
+		 * Invoke Function onClick outside of element
+		 */
+		function handleClickOutside(this: HTMLElement, e: Event) {
+			if (
+				dropdown_menu &&
+				!dropdown_menu.current.contains(e.target) &&
+				!base_menu.current.contains(e.target)
+			) {
+				setIsShown(false);
+			}
+		}
+		// Bind
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			// dispose
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	return (
+		<>
+			<header className="p-5 w-full place-content-center grid bg-white">
+				<h1
+					className={`${montserrat.className} text-3xl inline text-[#51279B]`}
+				>
+					Numerical Calculator
+				</h1>
+			</header>
+			<main className="py-6 px-4 grid place-content-center">
+				<form action="POST" className="max-w-3xl" onSubmit={onSubmit}>
+					<div className="bg-white text-xl p-6 shadow-md ">
+						<label htmlFor="findee" className="mb-1 block">
+							Number
+						</label>
+						<input
+							className="border-solid border-[#653CAD] border-b-2 w-48 mb-5"
+							type="number"
+							name="findee"
+							id="findee"
+							required
+							value={13}
+						/>
+						<label htmlFor="n" className="mb-1 mt-4 block">
+							Nth Root
+						</label>
+						<input
+							className="border-solid border-[#653CAD] border-b-2 w-48"
+							type="number"
+							name="n"
+							id="n"
+							value={3}
+							required
+						/>
+					</div>
+					<h4 className="text-[#627D98] font-bold text-sm mt-6">Boundary</h4>
+					<div className="flex mt-3 text-lg justify-between">
+						<div className="bg-white text-xl p-6 shadow-md basis-1/3 text-center">
+							<label htmlFor="a" className="">
+								Start
+							</label>
+							<input
+								type="number"
+								name="a"
+								id="a"
+								className="border-solid border-[#653CAD] border-b-2 w-full text-center "
+								value={1}
+								required
+							/>
+						</div>
+						<div className="bg-white text-xl p-6 shadow-md basis-1/3 text-center">
+							<label htmlFor="b" className="">
+								End
+							</label>
+							<input
+								type="number"
+								name="b"
+								id="b"
+								className="border-solid border-[#653CAD] border-b-2 w-full text-center"
+								value={10}
+								required
+							/>
+						</div>
+					</div>
+					<h4 className="text-[#627D98] font-bold text-sm mt-6 ">Method</h4>
+					<a
+						href="#"
+						className={`p-6 bg-white relative shadow-md w-full mt-3 flex justify-between ${
+							isShown ? "" : "hover:bg-[#f5f5f5]"
+						} `}
+						onClick={onClick}
+						ref={base_menu}
+					>
+						<p>{endPoints[method].name}</p>
+						<Image src={dropdown_svg} alt="dropdown" className=""></Image>
+						<ul
+							ref={dropdown_menu}
+							className={`${
+								isShown
+									? "absolute left-0 top-[100%]  bg-white w-full shadow-md"
+									: "hidden"
+							}`}
+						>
+							{endPoints.map((e, i) => (
+								<li
+									key={i}
+									className="p-6 hover:bg-[#f5f5f5]"
+									data-choice={i}
+									onClick={() => setMethod(i)}
+								>
+									{e.name}
+								</li>
+							))}
+						</ul>
+					</a>
+					<div className="bg-white p-6 mt-3 shadow-md basis-1/3 flex justify-between">
+						<label htmlFor="maxIteration" className="flex-shrink-0">
+							Maximum Iterations
+						</label>
+						<input
+							type="number"
+							name="maxIteration"
+							id="maxIteration"
+							value={100000}
+							className="border-solid border-[#653CAD] border-b-2 w-36 text-center"
+							required
+						/>
+					</div>
+					<button
+						type="submit"
+						className="mt-9 p-3 bg-[#F9703E] text-white text-lg font-bold w-full"
+					>
+						Submit
+					</button>
+				</form>
+				{isFetched && !isError && <p className="mt-10">{data?.value}</p>}
+			</main>
+		</>
+	);
 }
