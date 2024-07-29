@@ -73,7 +73,7 @@ export default function Home() {
 				</h1>
 			</header>
 			<main className="py-6 px-4 grid place-content-center">
-				<form action="POST" className="max-w-3xl" onSubmit={onSubmit}>
+				<form className="max-w-3xl" onSubmit={onSubmit}>
 					<div className="bg-white text-xl p-6 shadow-md ">
 						<label htmlFor="findee" className="mb-1 block">
 							Number
@@ -83,8 +83,8 @@ export default function Home() {
 							type="number"
 							name="findee"
 							id="findee"
+							defaultValue="34"
 							required
-							value={13}
 						/>
 						<label htmlFor="n" className="mb-1 mt-4 block">
 							Nth Root
@@ -94,7 +94,7 @@ export default function Home() {
 							type="number"
 							name="n"
 							id="n"
-							value={3}
+							defaultValue={3}
 							required
 						/>
 					</div>
@@ -109,7 +109,7 @@ export default function Home() {
 								name="a"
 								id="a"
 								className="border-solid border-[#653CAD] border-b-2 w-full text-center "
-								value={1}
+								defaultValue={1}
 								required
 							/>
 						</div>
@@ -122,7 +122,7 @@ export default function Home() {
 								name="b"
 								id="b"
 								className="border-solid border-[#653CAD] border-b-2 w-full text-center"
-								value={10}
+								defaultValue={10}
 								required
 							/>
 						</div>
@@ -166,7 +166,7 @@ export default function Home() {
 							type="number"
 							name="maxIteration"
 							id="maxIteration"
-							value={100000}
+							defaultValue={100000}
 							className="border-solid border-[#653CAD] border-b-2 w-36 text-center"
 							required
 						/>

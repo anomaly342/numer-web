@@ -1,5 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
-
+var CLIENT_URL = builder.Configuration.GetValue<string>("env:CLIENT_URL");
+Console.WriteLine(CLIENT_URL);
 // Add services to the container.
 builder.Services.AddHttpLogging(o => { });
 builder.Services.AddCors(options =>
@@ -7,7 +8,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: "Cors",
         policy =>
         {
-            policy.WithOrigins("https://localhost:3000")
+            policy.WithOrigins(CLIENT_URL)
                 .AllowAnyHeader().AllowAnyMethod().AllowCredentials();
         });
 });
