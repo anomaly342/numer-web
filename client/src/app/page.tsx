@@ -8,6 +8,7 @@ import dropdown_svg from "@/assets/dropdown_arrow.svg";
 import endPoints from "@/utils/endPoints";
 import CalcRequest from "@/utils/types";
 import getResult from "@/utils/fetch";
+import Skeleton from "react-loading-skeleton";
 const montserrat = Montserrat({ weight: "700", subsets: ["latin"] });
 
 export default function Home() {
@@ -17,7 +18,15 @@ export default function Home() {
 	const base_menu = useRef<any>(null);
 	const object: Partial<CalcRequest> = {};
 
-	const { data, isError, isLoading, refetch, isFetched } = useQuery({
+	const {
+		data,
+		isError,
+		isLoading,
+		refetch,
+		isFetched,
+		dataUpdatedAt,
+		isFetching,
+	} = useQuery({
 		queryKey: ["result"],
 		queryFn: () => getResult(object as CalcRequest, endPoints[method].api),
 		enabled: false,
@@ -62,6 +71,14 @@ export default function Home() {
 			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, []);
+
+	useEffect(() => {
+		window.scroll({
+			top: document.body.offsetHeight,
+			left: 0,
+			behavior: "smooth",
+		});
+	}, [dataUpdatedAt, isError]);
 
 	return (
 		<>
@@ -171,14 +188,29 @@ export default function Home() {
 							required
 						/>
 					</div>
-					<button
-						type="submit"
-						className="mt-9 p-3 bg-[#F9703E] text-white text-lg font-bold w-full"
-					>
-						Submit
-					</button>
+					{isFetching ? (
+						<button
+							type="submit"
+							className="mt-9 p-3 bg-[#f5aa8f] text-white text-lg font-bold w-full cursor-not-allowed"
+							disabled
+						>
+							Submit
+						</button>
+					) : (
+						<button
+							type="submit"
+							className="mt-9 p-3 bg-[#F9703E] text-white text-lg font-bold w-full"
+						>
+							Submit
+						</button>
+					)}
 				</form>
-				{isFetched && !isError && <p className="mt-10">{data?.value}</p>}
+				{isFetched && (
+					<div className="bg-white text-xl p-6 shadow-md basis-1/3 text-center mt-10">
+						{isLoading && <Skeleton height={40} width={130}></Skeleton>}
+						{isError ? <p>Error</p> : <p>{data.value}</p>}
+					</div>
+				)}
 			</main>
 		</>
 	);

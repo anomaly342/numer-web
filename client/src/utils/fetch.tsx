@@ -13,10 +13,8 @@ const getResult = async (calcObj: CalcRequest, api: string) => {
 		}
 	);
 
-	if (response.ok) {
-		const data = await response.json();
-		return data;
-	}
+	const data = await response.json();
+	return data;
 };
 
 export default getResult;
