@@ -140,10 +140,10 @@ export default function Home() {
 						<Image src={dropdown_svg} alt="dropdown" className=""></Image>
 						<ul
 							ref={dropdown_menu}
-							className={`${
+							className={`transition-all absolute left-0 top-[100%] origin-top  bg-white w-full shadow-md visible  ${
 								isShown
-									? "absolute left-0 top-[100%]  bg-white w-full shadow-md"
-									: "hidden"
+									? "opacity-100 translate-y-0 scale-y-100"
+									: "invisible opacity-0 scale-y-50 "
 							}`}
 						>
 							{endPoints.map((e, i) => (
