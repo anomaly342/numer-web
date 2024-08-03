@@ -3,6 +3,7 @@ using server.Utilities;
 
 [Route("methods")]
 [ApiController]
+[Consumes("application/json")]
 public class MethodsController : ControllerBase
 {
     private readonly ILogger<MethodsController> _logger;
@@ -15,7 +16,6 @@ public class MethodsController : ControllerBase
 
     [HttpPost]
     [Route("bisection")]
-    [Consumes("application/json")]
     public IActionResult Bisection(CalcRequest calcRequest)
     {
         var (findee, n, a, b, maxIteration) = calcRequest;
@@ -52,7 +52,6 @@ public class MethodsController : ControllerBase
 
     [HttpPost]
     [Route("falsi")]
-    [Consumes("application/json")]
     public IActionResult Falsi(CalcRequest calcRequest)
     {
 
@@ -102,7 +101,6 @@ public class MethodsController : ControllerBase
 
     [HttpPost]
     [Route("fixed")]
-    [Consumes("application/json")]
 
     public IActionResult FixedPoint(CalcRequest calcRequest)
     {
@@ -121,16 +119,83 @@ public class MethodsController : ControllerBase
             x = g(x);
             if (Math.Abs(x - _x) < 0.000001)
             {
-                break;
+                Result result = new Result(x);
+                return Ok(result);
             }
             _x = x;
 
             iteration++;
         }
 
-        Result result = new Result(x);
-        return Ok(result);
+        return NotFound("Divergent function");
 
 
+
+
+    }
+    [HttpPost]
+    [Route("newton")]
+    public IActionResult Newton(CalcRequest calcRequest)
+    {
+        var (findee, n, a, b, maxIteration) = calcRequest;
+
+        double f(double x)
+        {
+            return Math.Pow(x, n) - findee;
+        }
+
+        double f_derivate(double x)
+        {
+            return n * Math.Pow(x, n - 1);
+        }
+        double x = a, _x = 0;
+        for (int i = 0; i < maxIteration; i++)
+        {
+            x = x - f(x) / f_derivate(x);
+            if (Math.Abs(x - _x) < 0.000001)
+            {
+                Result result = new Result(x);
+                return Ok(result);
+            }
+
+            _x = x;
+
+        }
+
+        return NotFound("Divergent function");
+    }
+
+    [HttpPost]
+    [Route("secant")]
+    public IActionResult Secant(CalcRequest calcRequest)
+    {
+        var (findee, n, a, b, maxIteration) = calcRequest;
+
+        double f(double x)
+        {
+            return Math.Pow(x, n) - findee;
+        }
+
+        double _f(double x, double prevX)
+        {
+            return (f(x) - f(prevX)) / (x - prevX);
+        }
+
+
+        double front = b, back = a, temp;
+        for (int i = 0; i < maxIteration; i++)
+        {
+            temp = front;
+            front = front - f(front) / _f(front, back);
+            back = temp;
+
+            if (Math.Abs(front - back) < 0.000001)
+            {
+                Result result = new Result(front);
+                return Ok(result);
+            }
+        }
+
+        return NotFound("Divergent function");
     }
 }
